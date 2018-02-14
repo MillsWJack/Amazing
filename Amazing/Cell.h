@@ -1,21 +1,26 @@
 #pragma once
+
+const int cols = 4;
+const int rows = 4;
+
 class Cell
 {
 public:
-	Cell(int x, int y, bool visible = true, bool current = false, bool visited = false);
+	Cell(int y, int x, bool visible = true, bool current = false, bool visited = false);
 	~Cell();
 
 	char Show();
-	inline bool getVisible() const { return visible; }
+
 	inline bool getCurrent() const { return current; }
 	inline bool getVisited() const { return visited; }
+	inline int getYPos() const { return yPos; }
+	inline int getXPos() const { return xPos; }
 
-	inline void setVisible(bool setter) { visible = setter; }
 	inline void setCurrent(bool setter) { current = setter; }
 	inline void setVisited(bool setter) { visited = setter; }
 
 private:
-	bool visible;
+
 	bool current;
 	bool visited;
 

@@ -21,48 +21,69 @@
 
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <algorithm>
 
 #include "Cell.h"
 
 using namespace std;
 
-const int cols = 4;
-const int rows = 4;
+const int row = 4;
+const int col = 4;
 
-Cell* gridArray[rows][cols];
-
-void draw(Cell* grid[][cols]);
+Cell* maze(Cell* grid[row][col], int a, int b);
 
 int main()
 {
-	for (int x = 0; x < rows; ++x)
+
+	Cell* grid[row][col];
+
+	for (int i = 0; i < row; ++i)
 	{
-		for (int y = 0; y < cols; ++y)
+		for (int j = 0; j < col; ++i)
 		{
-			Cell* pCell = new Cell(x, y);
-			gridArray[x][y] = pCell;
+			Cell* cell = new Cell(i, j);
+			grid[i][j] = cell;
+			if (maze(grid, i, j) == NULL)
+			{
+				grid[i][j]->Show();
+			}
 		}
 	}
-
-	gridArray[0][0]->setVisible(true);
-	gridArray[0][0]->setCurrent(true);
-	gridArray[0][0]->setVisited(true);
-
-	draw(gridArray);
 
 	return 0;
 }
 
-
-void draw(Cell* grid[][cols])
+Cell* maze(Cell* grid[row][col], int a, int b)
 {
-	for (int j = 0; j < rows; ++j)
-	{
-		for (int i = 0; i < cols; ++i)
-		{
-			cout << gridArray[j][i]->Show();
-		}
+	vector<Cell*> neighbors;
 
-		cout << endl;
+	Cell* top = grid[a - 1][b];
+	Cell* right = grid[a][b + 1];
+	Cell* bottom = grid[a + 1][b];
+	Cell* left = grid[a][b - 1];
+
+	if (a < 0 || b < 0 || a > col || b > row)
+	{
+		return NULL;
 	}
+
+	else if (top && !top->getVisited())
+	{
+		neighbors.push_back(top);
+	}
+	else if (right && !right->getVisited())
+	{
+		neighbors.push_back(right);
+	}
+	else if (bottom && !bottom->getVisited())
+	{
+		neighbors.push_back(bottom);
+	}
+	else if (left && !left->getVisited())
+	{
+		neighbors.push_back(left);
+	}
+
+	random_shuffle(neighbors.begin(), neighbors.end());
 }

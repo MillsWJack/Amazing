@@ -1,8 +1,15 @@
 #include "Cell.h"
 
-Cell::Cell(int x, int y, bool visible, bool current, bool visited):
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+Cell::Cell(int y, int x, bool visible, bool current, bool visited):
 	xPos(x),
-	yPos(y)
+	yPos(y),
+	current(current),
+	visited(visited)
 {
 }
 
@@ -12,14 +19,12 @@ Cell::~Cell()
 
 char Cell::Show()
 {
-	if (this->visible && !this->visited)
-	{
-		return '*';
-	}
-	if (this->visible && this->visited)
+	if (!this->visited)
 	{
 		return '#';
 	}
-
-	return ' ';
+	else
+	{
+		return '+';
+	}
 }
