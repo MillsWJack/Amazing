@@ -31,59 +31,86 @@ using namespace std;
 const int row = 4;
 const int col = 4;
 
-Cell* maze(Cell* grid[row][col], int a, int b);
+Cell* grid[row][col];
+char printGrid[row][col];
+
+Cell* maze(Cell* cell);
 
 int main()
 {
-
-	Cell* grid[row][col];
-
+	//Populate array with cells
 	for (int i = 0; i < row; ++i)
 	{
-		for (int j = 0; j < col; ++i)
+		for (int j = 0; j < col; ++j)
 		{
 			Cell* cell = new Cell(i, j);
 			grid[i][j] = cell;
-			if (maze(grid, i, j) == NULL)
-			{
-				grid[i][j]->Show();
-			}
 		}
+	}
+
+	//set starting cell as visited
+	grid[0][0]->setVisited(true);
+	
+	//recursive function
+	//returns NULL when finished
+	maze(grid[0][0]);
+
+	//printing loops
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < col; ++j)
+		{
+			cout << grid[i][j]->Show();
+		}
+
+		cout << endl;
 	}
 
 	return 0;
 }
 
-Cell* maze(Cell* grid[row][col], int a, int b)
+Cell* maze(Cell* cell)
 {
 	vector<Cell*> neighbors;
 
-	Cell* top = grid[a - 1][b];
-	Cell* right = grid[a][b + 1];
-	Cell* bottom = grid[a + 1][b];
-	Cell* left = grid[a][b - 1];
+	Cell* top =		grid[cell->getYPos() - 1][cell->getXPos()	 ];
+	Cell* right =	grid[cell->getYPos()	][cell->getXPos() + 1];
+	Cell* bottom =	grid[cell->getYPos() + 1][cell->getXPos()	 ];
+	Cell* left =	grid[cell->getYPos()	][cell->getXPos() - 1];
 
-	if (a < 0 || b < 0 || a > col || b > row)
+	//Check edgecases
+	if (cell->getYPos() < 0 || cell->getXPos() < 0 ||
+		cell->getYPos() > col || cell->getXPos() > row)
 	{
 		return NULL;
 	}
 
-	else if (top && !top->getVisited())
+	//Check valid neighbor directions and add them to vector
+	if (top && !top->getVisited())
 	{
 		neighbors.push_back(top);
 	}
-	else if (right && !right->getVisited())
+	if (right && !right->getVisited())
 	{
 		neighbors.push_back(right);
 	}
-	else if (bottom && !bottom->getVisited())
+	if (bottom && !bottom->getVisited())
 	{
 		neighbors.push_back(bottom);
 	}
-	else if (left && !left->getVisited())
+	if (left && !left->getVisited())
 	{
 		neighbors.push_back(left);
 	}
 
-	random_shuffle(neighbors.begin(), neighbors.end());
+	//Pick random neighbor and step forward
+	if (neighbors.size() > 0)
+	{
+		random_shuffle(neighbors.begin(), neighbors.end());
+		Cell* currentCell = neighbors[0];
+		currentCell->setVisited(true);
+		maze(currentCell);
+	}
+
+	return NULL;
 }
