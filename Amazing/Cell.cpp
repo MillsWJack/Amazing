@@ -25,6 +25,6 @@ char Cell::Show()
 	}
 	else
 	{
-		return '+';
+		return ' ';
 	}
 }

@@ -7,16 +7,16 @@
 
 /*
 	PSEUDO
-	Make the initial cell the current cell and mark it as visited
-	While there are unvisited cells
-		If the current cell has any neighbours which have not been visited
-			Choose randomly one of the unvisited neighbours
-			Push the current cell to the stack
-			Remove the wall between the current cell and the chosen cell
-			Make the chosen cell the current cell and mark it as visited
-		Else if stack is not empty
-			Pop a cell from the stack
-			Make it the current cell
+	1. Make the initial cell the current cell and mark it as visited
+	2. While there are unvisited cells
+		1. If the current cell has any neighbours which have not been visited
+			1. Choose randomly one of the unvisited neighbours
+			2. Push the current cell to the stack
+			3. Remove the wall between the current cell and the chosen cell
+			4. Make the chosen cell the current cell and mark it as visited
+		2. Else if stack is not empty
+			1. Pop a cell from the stack
+			2. Make it the current cell
 */
 
 #include <iostream>
@@ -28,13 +28,14 @@
 
 using namespace std;
 
-const int row = 14;
-const int col = 51;
+const int row = 4;
+const int col = 4;
 
 Cell* grid[row][col];
 char printGrid[row][col];
 
 Cell* maze(Cell* cell);
+void displayBoard();
 
 int main()
 {
@@ -49,23 +50,17 @@ int main()
 		}
 	}
 
+
 	//set starting cell as visited
 	grid[0][0]->setVisited(true);
 	
+	//Pause and clear screen then display
+	displayBoard();
+
 	//recursive function
 	//returns NULL when finished
 	maze(grid[0][0]);
 
-	/*printing loops*/
-	for (int i = 0; i < row - 1; ++i)
-	{
-		for (int j = 0; j < col - 1; ++j)
-		{
-			cout << grid[i][j]->Show();
-		}
-
-		cout << endl;
-	}
 
 	return 0;
 }
@@ -105,8 +100,64 @@ Cell* maze(Cell* cell)
 		random_shuffle(neighbors.begin(), neighbors.end());
 		Cell* currentCell = neighbors[0];
 		currentCell->setVisited(true);
+		currentCell->setCurrent(true);
+
+		//Pause and clear screen then display
+		displayBoard();
+
+		//Recursion
 		maze(currentCell);
 	}
 
 	return NULL;
+}
+
+void displayBoard()
+{
+	system("PAUSE");
+	system("CLS");
+
+	for (int i = 0; i < row - 1; ++i)
+	{
+		//Print lines across
+		for (int j = 0; j < col * 2; ++j)
+		{
+			if (j % 2 == 0)
+			{
+				cout << "+";
+			}
+			else
+			{
+				cout << "-";
+			}
+		}
+		cout << endl;
+
+		//Print lines down and Cell
+		for (int j = 0; j < col - 1; ++j)
+		{
+			if (j == 0)
+			{
+				cout << "|";
+			}
+			cout << grid[i][j]->Show() << "|";
+		}
+
+		cout << endl;
+	}
+
+	//Print bottom line
+	for (int j = 0; j < col * 2; ++j)
+	{
+		if (j % 2 == 0)
+		{
+			cout << "+";
+		}
+		else
+		{
+			cout << "-";
+		}
+	}
+
+	cout << endl;
 }
