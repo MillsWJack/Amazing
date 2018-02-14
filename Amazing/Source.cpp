@@ -28,8 +28,8 @@
 
 using namespace std;
 
-const int row = 4;
-const int col = 4;
+const int row = 14;
+const int col = 51;
 
 Cell* grid[row][col];
 char printGrid[row][col];
@@ -38,10 +38,11 @@ Cell* maze(Cell* cell);
 
 int main()
 {
+	srand(static_cast<unsigned int>(time(0)));
 	//Populate array with cells
-	for (int i = 0; i < row; ++i)
+	for (int i = 0; i < row - 1; ++i)
 	{
-		for (int j = 0; j < col; ++j)
+		for (int j = 0; j < col - 1; ++j)
 		{
 			Cell* cell = new Cell(i, j);
 			grid[i][j] = cell;
@@ -55,10 +56,10 @@ int main()
 	//returns NULL when finished
 	maze(grid[0][0]);
 
-	//printing loops
-	for (int i = 0; i < row; ++i)
+	/*printing loops*/
+	for (int i = 0; i < row - 1; ++i)
 	{
-		for (int j = 0; j < col; ++j)
+		for (int j = 0; j < col - 1; ++j)
 		{
 			cout << grid[i][j]->Show();
 		}
@@ -73,19 +74,14 @@ Cell* maze(Cell* cell)
 {
 	vector<Cell*> neighbors;
 
+	//Define each neighboring cell
 	Cell* top =		grid[cell->getYPos() - 1][cell->getXPos()	 ];
 	Cell* right =	grid[cell->getYPos()	][cell->getXPos() + 1];
 	Cell* bottom =	grid[cell->getYPos() + 1][cell->getXPos()	 ];
 	Cell* left =	grid[cell->getYPos()	][cell->getXPos() - 1];
 
-	//Check edgecases
-	if (cell->getYPos() < 0 || cell->getXPos() < 0 ||
-		cell->getYPos() > col || cell->getXPos() > row)
-	{
-		return NULL;
-	}
-
 	//Check valid neighbor directions and add them to vector
+	//Check whether cell is valid and whether it's been visited
 	if (top && !top->getVisited())
 	{
 		neighbors.push_back(top);
