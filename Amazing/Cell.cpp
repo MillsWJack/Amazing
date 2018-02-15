@@ -28,3 +28,13 @@ char Cell::Show()
 		return ' ';
 	}
 }
+
+int Cell::getXDifference(Cell* previousCell) const
+{
+	return previousCell->getXPos() - this->getXPos();
+}
+
+int Cell::getYDifference(Cell* previousCell) const
+{
+	return previousCell->getYPos() - this->getYPos();
+}

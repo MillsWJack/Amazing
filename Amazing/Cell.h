@@ -1,8 +1,5 @@
 #pragma once
 
-const int cols = 4;
-const int rows = 4;
-
 class Cell
 {
 public:
@@ -18,6 +15,9 @@ public:
 
 	inline void setCurrent(bool setter) { current = setter; }
 	inline void setVisited(bool setter) { visited = setter; }
+
+	int getXDifference(Cell* previousCell) const;
+	int Cell::getYDifference(Cell* previousCell) const;
 
 private:
 
