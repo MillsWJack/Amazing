@@ -31,10 +31,32 @@ char Cell::Show()
 
 int Cell::getXDifference(Cell* previousCell) const
 {
-	return previousCell->getXPos() - this->getXPos();
+	if (previousCell->getXPos() < this->getXPos())
+	{
+		return -1;
+	}
+	else if(previousCell->getXPos() > this->getXPos())
+	{
+		return +1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 int Cell::getYDifference(Cell* previousCell) const
 {
-	return previousCell->getYPos() - this->getYPos();
+	if (previousCell->getYPos() < this->getYPos())
+	{
+		return -1;
+	}
+	else if (previousCell->getYPos() > this->getYPos())
+	{
+		return +1;
+	}
+	else
+	{
+		return 0;
+	}
 }

@@ -28,8 +28,8 @@
 
 using namespace std;
 
-const int row = 2;
-const int col = 2;
+const int row = 5;
+const int col = 20;
 
 const int drawRow = (row * 2) + 1;
 const int drawCol = (col * 2) + 1;
@@ -38,8 +38,7 @@ Cell* grid[row][col];
 char printGrid[drawRow][drawCol];
 
 Cell* maze(Cell* cell);
-void displayBoard(int xDiff, int yDiff, Cell* currentCell);
-void populateDrawGrid();
+void displayBoard(Cell* previousCell);
 
 int main()
 {
@@ -57,11 +56,9 @@ int main()
 	//set starting cell as visited
 	grid[0][0]->setVisited(true);
 	grid[0][0]->setCurrent(true);
-
-	populateDrawGrid();
 	
 	//Pause and clear screen then display
-	displayBoard(0, 0, grid[0][0]);
+	displayBoard(grid[0][0]);
 
 	//recursive function
 	//returns NULL when finished
@@ -82,21 +79,33 @@ Cell* maze(Cell* cell)
 
 	//Check valid neighbor directions and add them to vector
 	//Check whether cell is valid and whether it's been visited
-	if (top && !top->getVisited() && cell->getYPos() != 0)
+	if (cell->getYPos() != 0)
 	{
-		neighbors.push_back(top);
+		if (top && !top->getVisited())
+		{
+			neighbors.push_back(top);
+		}
 	}
-	if (right && !right->getVisited() && cell->getXPos() != col - 1)
+	if (cell->getXPos() != col - 1)
 	{
-		neighbors.push_back(right);
+		if (right && !right->getVisited())
+		{
+			neighbors.push_back(right);
+		}
 	}
-	if (bottom && !bottom->getVisited() && cell->getYPos() != row - 1)
+	if (cell->getYPos() != row - 1)
 	{
-		neighbors.push_back(bottom);
+		if (bottom && !bottom->getVisited())
+		{
+			neighbors.push_back(bottom);
+		}
 	}
-	if (left && !left->getVisited() && cell->getXPos() != 0)
+	if (cell->getXPos() != 0)
 	{
-		neighbors.push_back(left);
+		if (left && !left->getVisited())
+		{
+			neighbors.push_back(left);
+		}
 	}
 
 	//Pick random neighbor and step forward
@@ -108,12 +117,13 @@ Cell* maze(Cell* cell)
 		currentCell->setVisited(true);
 		cell->setCurrent(false);
 		currentCell->setCurrent(true);
+		currentCell->setPreviousCell(cell);
 
 		int xDiff = currentCell->getXDifference(cell);
 		int yDiff = currentCell->getYDifference(cell);
 
 		//Pause and clear screen then display
-		displayBoard(xDiff, yDiff, currentCell);
+		displayBoard(currentCell);
 
 		//Recursion
 		maze(currentCell);
@@ -122,63 +132,51 @@ Cell* maze(Cell* cell)
 	return NULL;
 }
 
-void displayBoard(int xDiff, int yDiff, Cell* currentCell)
+void displayBoard(Cell* cell)
 {
 	system("PAUSE");
 	system("CLS");
+
+	int y = 0;
+	int x = 0;
 
 	for (int i = 0; i < drawRow; ++i)
 	{
 		for (int j = 0; j < drawCol; ++j)
 		{
-			if (currentCell->getXPos() == j - 1 &&
-				currentCell->getYPos() == i - 1 &&
-				printGrid[i][j] == '#')
+			if (i == 0 || i % 2 == 0)
 			{
-				printGrid[i][j] = currentCell->Show();
-				cout << printGrid[i][j];
-			}
-			else
-			{
-				cout << printGrid[i][j];
-			}
-		}
-		cout << endl;
-	}	
-}
-
-void populateDrawGrid()
-{
-	for (int i = 0; i < drawRow; ++i)
-	{
-		if (i % 2 == 0)
-		{
-			for (int j = 0; j < drawCol; ++j)
-			{
-				if (j % 2 == 0)
+				if (j == 0 || j % 2 == 0)
 				{
 					printGrid[i][j] = '+';
+					cout << printGrid[i][j];
 				}
 				else
 				{
 					printGrid[i][j] = '-';
+					cout << printGrid[i][j];
 				}
+			}
+			//If row is odd and col is odd, add cell to array
+			//and print
+			if (j % 2 == 1 && i % 2 == 1)
+			{
+				printGrid[i][j] = grid[y][x]->Show();
+				cout << printGrid[i][j];
+				x++;
+			}
+			else if (i != 0 && (j % 2 == 0 && i % 2 == 1))
+			{
+				printGrid[i][j] = '|';
+				cout << printGrid[i][j];
 			}
 		}
 
-		if (i != 0 && i % 3 == 0 || i == 1)
+		cout << endl;
+		if (i % 2 == 1 && i != 0)
 		{
-			for (int j = 0; j < drawCol; ++j)
-			{
-				if (j % 2 == 0)
-				{
-					printGrid[i][j] = '|';
-				}
-				else
-				{
-					printGrid[i][j] = '#';
-				}
-			}
+			x = 0;
+			y++;
 		}
 	}
 }
