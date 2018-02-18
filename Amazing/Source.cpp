@@ -28,8 +28,8 @@
 
 using namespace std;
 
-const int row = 5;
-const int col = 20;
+const int row = 6;
+const int col = 10;
 
 const int drawRow = (row * 2) + 1;
 const int drawCol = (col * 2) + 1;
@@ -39,6 +39,8 @@ char printGrid[drawRow][drawCol];
 
 Cell* maze(Cell* cell);
 void displayBoard();
+
+vector<Cell*> stack;
 
 int main()
 {
@@ -56,6 +58,7 @@ int main()
 	//set starting cell as visited
 	grid[0][0]->setVisited(true);
 	grid[0][0]->setCurrent(true);
+	stack.push_back(grid[0][0]);
 	
 	//Pause and clear screen then display
 	displayBoard();
@@ -70,6 +73,7 @@ int main()
 Cell* maze(Cell* cell)
 {
 	vector<Cell*> neighbors;
+	Cell* currentCell = NULL;
 
 	//Define each neighboring cell
 	Cell* top =		grid[cell->getYPos() - 1][cell->getXPos()	 ];
@@ -112,24 +116,31 @@ Cell* maze(Cell* cell)
 	if (neighbors.size() > 0)
 	{
 		random_shuffle(neighbors.begin(), neighbors.end());
-		Cell* currentCell = neighbors[0];
+		currentCell = neighbors[0];
+		stack.push_back(currentCell);
 
 		currentCell->setVisited(true);
 		cell->setCurrent(false);
 		currentCell->setCurrent(true);
 		currentCell->setPreviousCell(cell);
 
-		int xDiff = currentCell->getXDifference(cell);
-		int yDiff = currentCell->getYDifference(cell);
-
 		//Pause and clear screen then display
 		displayBoard();
-
-		//Recursion
-		maze(currentCell);
+	}
+	else if (stack.size() > 0)
+	{
+		currentCell = stack.back();
+		stack.pop_back();
 	}
 
-	return NULL;
+	if (currentCell == NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		return maze(currentCell);
+	}
 }
 
 void displayBoard()

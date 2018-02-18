@@ -18,9 +18,6 @@ public:
 	inline void setVisited(bool setter) { visited = setter; }
 	inline void setPreviousCell(Cell* cell) { previousCell = cell; }
 
-	int getXDifference(Cell* previousCell) const;
-	int getYDifference(Cell* previousCell) const;
-
 private:
 
 	Cell* previousCell;
