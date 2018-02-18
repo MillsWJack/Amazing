@@ -38,7 +38,7 @@ Cell* grid[row][col];
 char printGrid[drawRow][drawCol];
 
 Cell* maze(Cell* cell);
-void displayBoard(Cell* previousCell);
+void displayBoard();
 
 int main()
 {
@@ -58,7 +58,7 @@ int main()
 	grid[0][0]->setCurrent(true);
 	
 	//Pause and clear screen then display
-	displayBoard(grid[0][0]);
+	displayBoard();
 
 	//recursive function
 	//returns NULL when finished
@@ -123,7 +123,7 @@ Cell* maze(Cell* cell)
 		int yDiff = currentCell->getYDifference(cell);
 
 		//Pause and clear screen then display
-		displayBoard(currentCell);
+		displayBoard();
 
 		//Recursion
 		maze(currentCell);
@@ -132,8 +132,8 @@ Cell* maze(Cell* cell)
 	return NULL;
 }
 
-void displayBoard(Cell* cell)
-{
+void displayBoard()
+ {
 	system("PAUSE");
 	system("CLS");
 
@@ -144,13 +144,39 @@ void displayBoard(Cell* cell)
 	{
 		for (int j = 0; j < drawCol; ++j)
 		{
+			//If first row or every other, print line
 			if (i == 0 || i % 2 == 0)
 			{
+				//alternate between + and - to form a line
 				if (j == 0 || j % 2 == 0)
 				{
 					printGrid[i][j] = '+';
 					cout << printGrid[i][j];
 				}
+				else if (grid[y - 1][x])
+				{
+					if (grid[y][x]->getPreviousCell() == grid[y - 1][x]
+						&& grid[y][x]->getPreviousCell() != NULL
+						&& i != drawRow - 1)
+					{
+						printGrid[i][j] = ' ';
+						cout << printGrid[i][j];
+					}
+					else if (grid[y - 1][x]->getPreviousCell() == grid[y][x]
+						&& grid[y][x]->getPreviousCell() != NULL
+						&& i != drawRow - 1)
+					{
+						printGrid[i][j] = ' ';
+						cout << printGrid[i][j]; 
+					}
+					else
+					{
+						printGrid[i][j] = '-';
+						cout << printGrid[i][j];
+					}
+					x++;
+				}
+
 				else
 				{
 					printGrid[i][j] = '-';
@@ -158,7 +184,7 @@ void displayBoard(Cell* cell)
 				}
 			}
 			//If row is odd and col is odd, add cell to array
-			//and print
+			//and print - alternate with |
 			if (j % 2 == 1 && i % 2 == 1)
 			{
 				printGrid[i][j] = grid[y][x]->Show();
@@ -167,15 +193,38 @@ void displayBoard(Cell* cell)
 			}
 			else if (i != 0 && (j % 2 == 0 && i % 2 == 1))
 			{
-				printGrid[i][j] = '|';
-				cout << printGrid[i][j];
+				if (j == 0 || j == drawCol - 1)
+				{
+					printGrid[i][j] = '|';
+					cout << printGrid[i][j];
+				}
+				else if (grid[y][x - 1])
+				{
+					if (grid[y][x]->getPreviousCell() == grid[y][x - 1] 
+						&& grid[y][x]->getPreviousCell() != NULL)
+					{
+						printGrid[i][j] = ' ';
+						cout << printGrid[i][j];
+					}
+					else if (grid[y][x - 1]->getPreviousCell() == grid[y][x]
+						&& grid[y][x]->getPreviousCell() != NULL)
+					{
+						printGrid[i][j] = ' ';
+						cout << printGrid[i][j];
+					}
+					else
+					{
+						printGrid[i][j] = '|';
+						cout << printGrid[i][j];
+					}
+				}
 			}
 		}
 
 		cout << endl;
-		if (i % 2 == 1 && i != 0)
+		x = 0;
+		if (i % 2 == 1 && i != 0 && i != drawRow - 2)
 		{
-			x = 0;
 			y++;
 		}
 	}
